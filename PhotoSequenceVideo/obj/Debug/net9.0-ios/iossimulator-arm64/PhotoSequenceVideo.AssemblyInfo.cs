@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PhotoSequenceVideo")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+9413a3c21ae16975b0bec2584a93754d8bae7afd")]
 [assembly: System.Reflection.AssemblyProductAttribute("PhotoSequenceVideo")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PhotoSequenceVideo")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

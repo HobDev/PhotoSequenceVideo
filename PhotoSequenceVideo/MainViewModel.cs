@@ -8,11 +8,10 @@ namespace PhotoSequenceVideo;
 public partial class MainViewModel : ObservableObject
 {
 
-     [ObservableProperty]
-     ObservableCollection<byte[]> _images = new ObservableCollection<byte[]>();
-
     [ObservableProperty]
-    bool isShowing = false;
+    ObservableCollection<byte[]> _images = new ObservableCollection<byte[]>();
+
+    PeriodicTimer timer;
 
     [ObservableProperty]
     byte[]? _currentImage;
@@ -28,7 +27,7 @@ public partial class MainViewModel : ObservableObject
 
     [RelayCommand]
     // This command can be bound to a button in the MainPage.xaml to trigger media picking
-     async Task PickMediaAsync()
+    async Task PickMediaAsync()
     {
         try
         {
@@ -45,13 +44,13 @@ public partial class MainViewModel : ObservableObject
                 {
                     using MemoryStream memoryStream = new MemoryStream();
                     await photoStream.CopyToAsync(memoryStream);
-                     memoryStream.Position = 0;
+                    memoryStream.Position = 0;
                     photoStream.Position = 0;
                     byte[] imageBytes = new byte[memoryStream.Length];
                     await memoryStream.ReadAsync(imageBytes, 0, (int)memoryStream.Length);
                     // Add the image bytes to the collection
                     Images.Add(imageBytes);
-                   
+
                 }
 
             }
@@ -65,48 +64,56 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     async Task ShowAsync()
     {
-         try 
-         {
-            IsShowing = !IsShowing;
-            if (IsShowing)
+        try
+        {
+
+
+            timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+
+            // Show some UI element or perform an action when showing
+
+            while (await timer.WaitForNextTickAsync())
             {
-                // Show some UI element or perform an action when showing
-                PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-                while (await timer.WaitForNextTickAsync())
+                if (CurrentImage != null)
                 {
-                    if (CurrentImage != null)
+                    // Update the current image or perform any periodic action
+                    // For example, you might want to change the image or update some UI element
+                    int currentIndex = Images.IndexOf(CurrentImage);
+                    if (currentIndex < Images.Count - 1)
                     {
-                        // Update the current image or perform any periodic action
-                        // For example, you might want to change the image or update some UI element
-                        int currentIndex = Images.IndexOf(CurrentImage);
-                        if (currentIndex < Images.Count - 1)
-                        {
-                            CurrentImage = Images[currentIndex + 1];
-                        }
-                        else
-                        {
-                            CurrentImage = Images[0]; // Loop back to the first image
-                        }
+                        CurrentImage = Images[currentIndex + 1];
                     }
+                    else
+                    {
+                        CurrentImage = Images[0]; // Loop back to the first image
+                    }
+                }
                 else
-                    {
-                        // Handle the case when there are no images
-                        CurrentImage = Images.Count > 0 ? Images[0] : null;
-                    }
-              }
-
+                {
+                    // Handle the case when there are no images
+                    CurrentImage = Images.Count > 0 ? Images[0] : null;
+                }
             }
-            else
-            {
-                // Hide the UI element or perform an action when not showing
 
-            }
-            
-         }
-         catch (Exception ex)
-         {
+      
+
+        }
+        catch (Exception ex)
+        {
             // Handle exceptions if needed
-         }  
+        }
+    }
+
+    [RelayCommand]
+    async Task StopShowAsync()
+    {
+        // Stop the periodic timer or any ongoing process
+        if (timer != null)
+        {
+            timer.Dispose();
+            timer = null;
+        }
+
     }
 
 }

@@ -59,10 +59,9 @@ public class MainPage : ContentPage
 				
 				new Label
 				{
-					 Text=$"Add Images: {viewModel.Images.Count}",
 					 HorizontalOptions = LayoutOptions.Center,
 					 FontSize = 16,
-				}
+				}.Bind(Label.TextProperty, nameof(viewModel.Images.Count)).CenterHorizontal().CenterVertical()
 				}
 			   }.Row(section.Button1).CenterHorizontal().CenterVertical(),
 				
@@ -70,15 +69,36 @@ public class MainPage : ContentPage
 			   {
 				Children=
 				{
-				  new Button
+					new HorizontalStackLayout
+					{
+						Spacing=20,
+						Children=
+						{
+							  new Button
 				{
+					Text = "Start Show",
 					BorderWidth = 1,
 					CornerRadius = 5,
 					BackgroundColor = Colors.LightYellow,
 					Padding= new Thickness(20,10),
 					TextColor = Colors.Black,
 					FontSize = 20,
-				}.Bind(Button.CommandProperty,nameof(viewModel.ShowCommand)).Bind(Button.TextProperty, nameof(viewModel.IsShowing), convert:(bool showing)=>showing==true?"Stop Show":"Start Show").CenterHorizontal().CenterVertical(),
+				}.Bind(Button.CommandProperty,nameof(viewModel.ShowCommand)).CenterHorizontal().CenterVertical(),
+
+				  new Button
+				{
+					Text = "Stop Show",
+					BorderWidth = 1,
+					CornerRadius = 5,
+					BackgroundColor = Colors.LightYellow,
+					Padding= new Thickness(20,10),
+					TextColor = Colors.Black,
+					FontSize = 20,
+				}.Bind(Button.CommandProperty,nameof(viewModel.StopShowCommand)).CenterHorizontal().CenterVertical(),
+						}
+
+					},
+				
 
 				new Label
 				{
