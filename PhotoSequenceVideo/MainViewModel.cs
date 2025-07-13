@@ -7,7 +7,6 @@ namespace PhotoSequenceVideo;
 
 public partial class MainViewModel : ObservableObject
 {
-
     [ObservableProperty]
     ObservableCollection<byte[]> _images = new ObservableCollection<byte[]>();
 
@@ -23,7 +22,7 @@ public partial class MainViewModel : ObservableObject
     }
 
     // Add properties and methods to handle the logic for the main page
-    // For example, you might want to add commands for picking media, processing images, etc.   
+    // For example, you might want to add commands for picking media, processing images, etc.
 
     [RelayCommand]
     // This command can be bound to a button in the MainPage.xaml to trigger media picking
@@ -31,10 +30,9 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
-            FileResult? fileResult = await _mediaPicker.PickPhotoAsync(new MediaPickerOptions
-            {
-                Title = "Pick a photo"
-            });
+            FileResult? fileResult = await _mediaPicker.PickPhotoAsync(
+                new MediaPickerOptions { Title = "Pick a photo" }
+            );
 
             if (fileResult != null)
             {
@@ -50,9 +48,7 @@ public partial class MainViewModel : ObservableObject
                     await memoryStream.ReadAsync(imageBytes, 0, (int)memoryStream.Length);
                     // Add the image bytes to the collection
                     Images.Add(imageBytes);
-
                 }
-
             }
         }
         catch (Exception ex)
@@ -66,8 +62,6 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
-
-
             timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
 
             // Show some UI element or perform an action when showing
@@ -94,9 +88,6 @@ public partial class MainViewModel : ObservableObject
                     CurrentImage = Images.Count > 0 ? Images[0] : null;
                 }
             }
-
-      
-
         }
         catch (Exception ex)
         {
@@ -113,7 +104,5 @@ public partial class MainViewModel : ObservableObject
             timer.Dispose();
             timer = null;
         }
-
     }
-
 }
