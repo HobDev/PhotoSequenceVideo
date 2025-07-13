@@ -13,6 +13,9 @@ public partial class MainViewModel : ObservableObject
     PeriodicTimer timer;
 
     [ObservableProperty]
+    int _imageCount;
+
+    [ObservableProperty]
     byte[]? _currentImage;
     private readonly IMediaPicker _mediaPicker;
 
@@ -48,6 +51,8 @@ public partial class MainViewModel : ObservableObject
                     await memoryStream.ReadAsync(imageBytes, 0, (int)memoryStream.Length);
                     // Add the image bytes to the collection
                     Images.Add(imageBytes);
+                    ImageCount = Images.Count;
+                    CurrentImage = imageBytes; // Set the current image to the newly added image
                 }
             }
         }

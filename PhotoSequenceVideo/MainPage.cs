@@ -18,7 +18,7 @@ public class MainPage : ContentPage
         Content = new Grid
         {
             RowDefinitions = Rows.Define(
-                (section.Carousel, Auto),
+                (section.Carousel, 450),
                 (section.Button1, Auto),
                 (section.Button2, Star)
             ),
@@ -62,7 +62,7 @@ public class MainPage : ContentPage
                             .CenterHorizontal()
                             .CenterVertical(),
                         new Label { HorizontalOptions = LayoutOptions.Center, FontSize = 16 }
-                            .Bind(Label.TextProperty, nameof(viewModel.Images.Count))
+                            .Bind(Label.TextProperty, nameof(viewModel.ImageCount), stringFormat: "Added Images: {0}")
                             .CenterHorizontal()
                             .CenterVertical(),
                     },
