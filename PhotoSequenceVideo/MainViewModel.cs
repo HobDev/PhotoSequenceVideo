@@ -8,20 +8,21 @@ namespace PhotoSequenceVideo;
 public partial class MainViewModel : ObservableObject
 {
     [ObservableProperty]
-    ObservableCollection<byte[]> _images = new ObservableCollection<byte[]>();
+    ObservableCollection<byte[]?>? _images = new ObservableCollection<byte[]?>();
 
-    PeriodicTimer timer;
+    PeriodicTimer? timer;
 
     [ObservableProperty]
     int _imageCount;
 
     [ObservableProperty]
     byte[]? _currentImage;
-    private readonly IMediaPicker _mediaPicker;
+    private readonly IMediaPicker? _mediaPicker;
 
-    public MainViewModel(IMediaPicker mediaPicker)
+    public MainViewModel(IMediaPicker? mediaPicker)
     {
         _mediaPicker = mediaPicker ?? throw new ArgumentNullException(nameof(mediaPicker));
+        Images= new ObservableCollection<byte[]?>();
     }
 
     // Add properties and methods to handle the logic for the main page
@@ -33,6 +34,16 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
+            if (Images.Count == 5)
+            {
+                // Optionally, you can show a message or handle the case when the limit is reached
+                await Shell.Current.DisplayAlert(
+                    "Limit Reached",
+                    "You can only add up to 5 images.",
+                    "OK"
+                );
+                return;
+            }
             FileResult? fileResult = await _mediaPicker.PickPhotoAsync(
                 new MediaPickerOptions { Title = "Pick a photo" }
             );
@@ -67,6 +78,24 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
+            if(Images.Count == 3)
+            {
+                await Shell.Current.DisplayAlert(
+                    "No Images",
+                    "Please add images before starting the slideshow.",
+                    "OK"
+                );
+                return;
+            }
+            else if (Images.Count < 3)
+            {
+                await Shell.Current.DisplayAlert(
+                    "Not Enough Images",
+                    "Please add 3 to 5 images before starting the slideshow.",
+                    "OK"
+                );
+                return;
+            }
             timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
 
             // Show some UI element or perform an action when showing
