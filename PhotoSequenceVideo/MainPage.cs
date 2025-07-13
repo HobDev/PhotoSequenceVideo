@@ -1,0 +1,96 @@
+﻿using CommunityToolkit.Maui.Converters;
+using CommunityToolkit.Maui.Markup;
+using static CommunityToolkit.Maui.Markup.GridRowsColumns;
+
+namespace PhotoSequenceVideo;
+
+public class MainPage : ContentPage
+{
+
+	enum section {
+		Carousel,
+		Button1,		
+		Button2
+	 }
+
+	public MainPage(IMediaPicker mediaPicker, MainViewModel viewModel)
+	{
+
+
+		Content = new Grid
+		{
+			RowDefinitions = Rows.Define(
+				(section.Carousel, Auto),
+				(section.Button1, Auto),	
+				(section.Button2, Star)
+			),
+			
+
+			Children =
+			{
+				new CarouselView
+				{
+					IsSwipeEnabled = false,
+					HeightRequest = 400,
+					EmptyView= "No images available",
+					ItemTemplate = new DataTemplate(() =>
+					{
+						var image = new Image();
+						image.Bind(Image.SourceProperty, ".", converter: new ByteArrayToImageSourceConverter());
+						return image;
+					})
+				}.Bind(ItemsView.ItemsSourceProperty, nameof(viewModel.Images)).Bind(CarouselView.CurrentItemProperty, nameof(viewModel.CurrentImage)).Row(section.Carousel),
+
+               new VerticalStackLayout
+			   {
+				Children=
+				{
+					new Button
+				{
+					Text = "Add Image",
+					BorderWidth = 1,
+					CornerRadius = 5,
+					BackgroundColor = Colors.LightYellow,
+					Padding = new Thickness(20, 10),
+					TextColor = Colors.Black,
+					FontSize = 20,
+
+				}.Bind(Button.CommandProperty, nameof(viewModel.PickMediaCommand)).CenterHorizontal().CenterVertical(),
+				
+				new Label
+				{
+					 Text=$"Add Images: {viewModel.Images.Count}",
+					 HorizontalOptions = LayoutOptions.Center,
+					 FontSize = 16,
+				}
+				}
+			   }.Row(section.Button1).CenterHorizontal().CenterVertical(),
+				
+               new VerticalStackLayout
+			   {
+				Children=
+				{
+				  new Button
+				{
+					BorderWidth = 1,
+					CornerRadius = 5,
+					BackgroundColor = Colors.LightYellow,
+					Padding= new Thickness(20,10),
+					TextColor = Colors.Black,
+					FontSize = 20,
+				}.Bind(Button.CommandProperty,nameof(viewModel.ShowCommand)).Bind(Button.TextProperty, nameof(viewModel.IsShowing), convert:(bool showing)=>showing==true?"Stop Show":"Start Show").CenterHorizontal().CenterVertical(),
+
+				new Label
+				{
+					Text="Add 3 to 5 images to see the slideshow",
+					HorizontalOptions = LayoutOptions.Center,
+					FontSize = 16,
+				}
+			   }
+			   }.Row(section.Button2).CenterHorizontal().CenterVertical()
+			}
+		};
+
+		BindingContext = viewModel;
+	}
+}
